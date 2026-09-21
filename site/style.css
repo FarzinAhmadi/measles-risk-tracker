@@ -117,6 +117,9 @@ input[type="search"] { width: 240px; max-width: 100%; }
 .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 5px;
       box-shadow: inset 0 0 0 1px var(--border); }
 .map-tools { position: absolute; right: 0; top: 0; display: flex; gap: 6px; }
+.btn.icon { width: 32px; height: 32px; padding: 0; font-size: 18px; line-height: 1; }
+#map { cursor: grab; }
+#map:active { cursor: grabbing; }
 .tooltip {
   position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
   border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.4; box-shadow: 0 4px 16px rgba(0,0,0,0.12);

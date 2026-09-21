@@ -48,6 +48,7 @@
   const hLabel = (h) => (h === "1wk" ? "next week" : "the next 4 weeks");
   const target = { "1wk": range(M.target_week_start, M.target_week_end), "4wk": range(M.target_week_start, M.target_4wk_end) };
 
+  if (window.MRT_STANDALONE) $("#dl-latest").href = "https://farzinahmadi.github.io/measles-risk-tracker/data/latest/forecast.csv";
   $("#stamp").innerHTML = `Forecast for <b>${range(M.target_week_start, M.target_week_end)}</b> · data reported through ${fWk(pd(M.as_of))} · <a href="#data">Download data</a> · <a href="#about">How it works</a>`;
 
   // ------------------------------------------------------------------ tiles
@@ -145,21 +146,47 @@
       tip.style.left = x + "px"; tip.style.top = y + "px";
     })
     .on("pointerleave", () => { tip.style.display = "none"; })
-    .on("click", (ev, f) => { if (byFips.get(f.id)) select(f.id, false); });
+    .on("click", (ev, f) => {
+      const c = byFips.get(f.id);
+      if (!c) return;
+      if (c.state_abbr !== S.state) setState(c.state_abbr, false);   // clicking a county zooms to its state
+      select(f.id, false);
+    });
 
-  let zoomK = 1;
+  // Zoom and pan. Mouse: drag to pan, Ctrl/Cmd + scroll (or trackpad pinch) to zoom, so ordinary scrolling still
+  // scrolls the page. Touch: pinch to zoom; one-finger drag pans only once zoomed in. Buttons for everything.
+  let curK = 1;
+  const zoom = d3.zoom()
+    .scaleExtent([1, 24])
+    .translateExtent([[0, 0], [975, 610]])
+    .wheelDelta((ev) => -ev.deltaY * (ev.deltaMode === 1 ? 0.05 : ev.deltaMode ? 1 : 0.002) * (Math.abs(ev.deltaY) < 40 ? 10 : 2))
+    .filter((ev) => {
+      if (ev.type === "wheel") return ev.ctrlKey || ev.metaKey;
+      if (ev.type === "dblclick") return false;
+      if (ev.type.startsWith("touch")) return ev.touches.length > 1 || curK > 1.01;
+      return !ev.button;
+    })
+    .on("zoom", (ev) => {
+      gRoot.attr("transform", ev.transform);
+      curK = ev.transform.k;
+      svg.style("touch-action", curK > 1.01 ? "none" : "pan-y");
+      $("#reset").hidden = !(S.state || curK > 1.01);
+    });
+  svg.call(zoom).on("dblclick.zoom", null).style("touch-action", "pan-y");
+  $("#zoom-in").addEventListener("click", () => svg.transition().duration(300).call(zoom.scaleBy, 1.8));
+  $("#zoom-out").addEventListener("click", () => svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.8));
+
   function zoomTo(abbr) {
     let t = d3.zoomIdentity;
     if (abbr) {
       const sf = stateFeats.find((s) => abbrOfStateFips.get(s.id) === abbr);
       if (sf) {
         const [[x0, y0], [x1, y1]] = path.bounds(sf);
-        const k = Math.min(8, 0.9 / Math.max((x1 - x0) / 975, (y1 - y0) / 610));
+        const k = Math.min(12, 0.9 / Math.max((x1 - x0) / 975, (y1 - y0) / 610));
         t = d3.zoomIdentity.translate(975 / 2, 610 / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
       }
     }
-    zoomK = t.k;
-    gRoot.transition().duration(600).attr("transform", t.toString());
+    svg.transition().duration(650).call(zoom.transform, t);
     $("#reset").hidden = !abbr;
   }
 
@@ -184,6 +211,8 @@
 
   // ------------------------------------------------------------------ detail + list
   function select(fips, scroll) {
+    const c = byFips.get(fips);
+    if (c && S.state && c.state_abbr !== S.state) { setState(c.state_abbr, false); }
     S.sel = fips; renderMap(); renderDetail(); renderList();
     if (scroll) $("#detail").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -330,10 +359,11 @@
   }
 
   // ------------------------------------------------------------------ about, data, footer
-  const repo = (() => {
-    const h = location.hostname, p = location.pathname.split("/").filter(Boolean);
-    return h.endsWith("github.io") && p.length ? `https://github.com/${h.split(".")[0]}/${p[0]}` : null;
-  })();
+  // Where the tracker lives. On GitHub Pages the data links are relative; in the single-file preview they point here.
+  const REPO = "https://github.com/FarzinAhmadi/measles-risk-tracker";
+  const PAGES = "https://farzinahmadi.github.io/measles-risk-tracker/";
+  const repo = REPO;
+  const D = window.MRT_STANDALONE ? PAGES : "";          // prefix for links to data files
   const src = site.sources;
   const srcLink = (k) => `<a href="${src[k].repo}">${src[k].repo.replace("https://github.com/", "")}</a>`;
   const b1 = perf["1wk"] && perf["1wk"].model, b4 = perf["4wk"] && perf["4wk"].model;
@@ -349,11 +379,11 @@
   $("#data-body").innerHTML = `
     <p>All forecasts are free to use under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Please cite the tracker and the JHU Measles Tracking Team data.</p>
     <ul>
-      <li><a href="data/latest/forecast.csv" download>data/latest/forecast.csv</a> — this week's forecast, one row per county (3,144 rows).</li>
-      <li><a href="data/archive/index.csv">data/archive/index.csv</a> — list of every published forecast; each is in <code>data/archive/forecasts/&lt;week&gt;.csv</code>, named by the first day of the forecast week.</li>
-      <li><a href="data/evaluation/scorecard.csv">data/evaluation/scorecard.csv</a> and <a href="data/evaluation/scorecard_onsets.csv">scorecard_onsets.csv</a> — how each archived forecast did.</li>
-      <li><a href="data/evaluation/backtest_weekly.csv">data/evaluation/backtest_weekly.csv</a> — this week's 26-week backtest.</li>
-      <li><a href="data/latest/metadata.json">data/latest/metadata.json</a> — run details, including the exact upstream commits used.</li>
+      <li><a href="${D}data/latest/forecast.csv" download>data/latest/forecast.csv</a> — this week's forecast, one row per county (3,144 rows).</li>
+      <li><a href="${D}data/archive/index.csv">data/archive/index.csv</a> — list of every published forecast; each is in <a href="${REPO}/tree/main/data/archive/forecasts"><code>data/archive/forecasts/</code></a>, named by the first day of the forecast week.</li>
+      <li><a href="${D}data/evaluation/scorecard.csv">data/evaluation/scorecard.csv</a> and <a href="${D}data/evaluation/scorecard_onsets.csv">scorecard_onsets.csv</a> — how each archived forecast did.</li>
+      <li><a href="${D}data/evaluation/backtest_weekly.csv">data/evaluation/backtest_weekly.csv</a> — this week's 26-week backtest.</li>
+      <li><a href="${D}data/latest/metadata.json">data/latest/metadata.json</a> — run details, including the exact upstream commits used.</li>
     </ul>
     <p>Main columns in <code>forecast.csv</code>:</p>
     <dl class="cols">
@@ -365,7 +395,7 @@
       <dt>model_score_…</dt><dd>uncalibrated model score, used for ranking</dd>
       <dt>status</dt><dd><code>quiet</code> (no cases this week, ranked) or <code>active</code> (reporting cases, not ranked)</dd>
     </dl>
-    ${repo ? `<p>Code and full history: <a href="${repo}">${repo.replace("https://github.com/", "")}</a>.</p>` : ""}`;
+    <p>Code, method notes and full history: <a href="${REPO}">${REPO.replace("https://github.com/", "")}</a> on GitHub. The site is at <a href="${PAGES}">${PAGES.replace("https://", "")}</a>.</p>`;
   $("#footer").innerHTML = `Case data: JHU Measles Tracking Team Data (CC BY 4.0). MMR coverage: Dong E, et al. JAMA 2025. Map: U.S. Census Bureau cartographic boundaries (2023) via us-atlas.
     Built with d3. Updated ${fWk(pd(M.as_of))} from measles_data@${esc(String(M.cases_commit).slice(0, 7))}.`;
 

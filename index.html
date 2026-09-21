@@ -19,8 +19,6 @@
 </header>
 
 <main class="wrap" id="app">
-  <section class="tiles" id="tiles" aria-label="Summary"></section>
-
   <section class="controls card" aria-label="Filters">
     <div>
       <span class="sr-label" style="font-size:13px;color:var(--ink-2);margin-right:8px">Forecast window</span>
@@ -49,9 +47,14 @@
       <div class="legend" id="legend"></div>
       <div class="map-wrap">
         <svg id="map" role="img" aria-label="Map of US counties colored by forecast risk tier"></svg>
-        <div class="map-tools"><button class="btn" id="reset" type="button" hidden>Show all states</button></div>
+        <div class="map-tools">
+          <button class="btn icon" id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+          <button class="btn icon" id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+          <button class="btn" id="reset" type="button" hidden>Show all states</button>
+        </div>
         <div class="tooltip" id="tip"></div>
       </div>
+      <p class="note-line">Click a county to zoom to its state. Drag to move the map; zoom with the + and − buttons, a pinch, or Ctrl/⌘ + scroll.</p>
       <p class="note-line" id="regions-note"></p>
     </div>
 
@@ -65,6 +68,17 @@
       <div class="tbl-wrap"><table id="watch"><thead></thead><tbody></tbody></table></div>
       <div class="more"><button class="btn" id="more" type="button">Show 50 more</button></div>
     </div>
+  </section>
+
+  <section class="card">
+    <h2>By state</h2>
+    <p class="sub">Select a row to filter the map and the list.</p>
+    <div class="tbl-wrap" style="max-height:420px"><table id="states"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section aria-labelledby="glance-h">
+    <h2 id="glance-h" class="section-h">This week and the track record</h2>
+    <div class="tiles" id="tiles"></div>
   </section>
 
   <section class="two">
@@ -87,12 +101,6 @@
     <h2>Live record</h2>
     <p class="sub">Every published forecast is archived unchanged and scored once the weeks it covers have been reported. Unlike the backtest above, these forecasts used only the data that were public on the day they were made.</p>
     <div id="live-body"></div>
-  </section>
-
-  <section class="card">
-    <h2>By state</h2>
-    <p class="sub">Select a row to filter the map and the list.</p>
-    <div class="tbl-wrap" style="max-height:420px"><table id="states"><thead></thead><tbody></tbody></table></div>
   </section>
 
   <section class="card prose" id="about">

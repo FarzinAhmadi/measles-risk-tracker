@@ -10,7 +10,7 @@ Every Friday, after the JHU Measles Tracking Team updates its public data, one s
 4. scores past forecasts against what was actually reported (the live record);
 5. writes the open-data CSVs and the site data, then commits and pushes to GitHub, which republishes the site.
 
-The site is `index.html` in this folder. GitHub Pages serves it at `https://<your-username>.github.io/measles-risk-tracker/`.
+The site is `index.html` in this folder. GitHub Pages serves it at https://farzinahmadi.github.io/measles-risk-tracker/ (repository: https://github.com/FarzinAhmadi/measles-risk-tracker).
 
 ## Weekly use
 
@@ -35,11 +35,11 @@ Run it any time after the Friday update (Friday evening or over the weekend). It
 2. Put the files in it, in either of two ways.
    - **With the setup script (recommended).** Move this folder somewhere outside OneDrive, for example `~/Projects/measles-risk-tracker`, because git repositories inside synced folders can get corrupted. Then run, in a terminal in that folder:
      ```
-     bash setup.sh https://github.com/<your-username>/measles-risk-tracker.git
+     bash setup.sh https://github.com/FarzinAhmadi/measles-risk-tracker.git
      ```
      This creates a Python environment in `~/.venvs/measles-risk-tracker` (numpy, pandas, scipy, scikit-learn, xgboost), makes the first commit and pushes it. On a Mac, if xgboost cannot load, run `brew install libomp` and then run `bash setup.sh` again.
-   - **By uploading in the browser.** On the empty repo's page, choose "uploading an existing file" and drag in everything inside this folder. The web page may skip the hidden `.gitignore` and `.nojekyll`; the site works without them. Then clone the repo to your computer outside OneDrive (`git clone https://github.com/<your-username>/measles-risk-tracker.git`). Run `bash setup.sh` once inside the clone to create the Python environment. The weekly script must run from this clone, because that is the copy that can push to GitHub.
-3. On GitHub: **Settings → Pages → Source: Deploy from a branch → Branch: main, folder: / (root) → Save.** The site is live a minute later, at `https://<your-username>.github.io/measles-risk-tracker/`.
+   - **By uploading in the browser.** On the empty repo's page, choose "uploading an existing file" and drag in everything inside this folder. The web page may skip the hidden `.gitignore` and `.nojekyll`; the site works without them. Then clone the repo to your computer outside OneDrive (`git clone https://github.com/FarzinAhmadi/measles-risk-tracker.git`). Run `bash setup.sh` once inside the clone to create the Python environment. The weekly script must run from this clone, because that is the copy that can push to GitHub.
+3. On GitHub: **Settings → Pages → Source: Deploy from a branch → Branch: main, folder: / (root) → Save.** The site is live a minute later, at https://farzinahmadi.github.io/measles-risk-tracker/.
 
 To preview the site locally, run `python3 -m http.server 8000` in this folder and open http://localhost:8000. Opening `index.html` directly from disk does not work, because the browser blocks it from loading the data files.
 

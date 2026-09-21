@@ -10,7 +10,7 @@ out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "measles_risk_tra
 rd = lambda p: open(os.path.join(HERE, p), encoding="utf-8").read()
 html = rd("index.html")
 site = rd("data/latest/site.json"); topo = rd("site/counties-albers-10m.json")
-shim = ("<script>(function(){var D={'data/latest/site.json':%s,'site/counties-albers-10m.json':%s};"
+shim = ("<script>window.MRT_STANDALONE=true;(function(){var D={'data/latest/site.json':%s,'site/counties-albers-10m.json':%s};"
         "var j=d3.json;d3.json=function(u){return u in D?Promise.resolve(D[u]):j.apply(this,arguments);};})();</script>") % (site, topo)
 html = html.replace('<link rel="stylesheet" href="site/style.css">', "<style>\n" + rd("site/style.css") + "\n</style>")
 html = html.replace('<script src="site/vendor/d3.v7.min.js"></script>', "<script>" + rd("site/vendor/d3.v7.min.js") + "</script>")
