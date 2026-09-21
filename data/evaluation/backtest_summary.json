@@ -1,0 +1,96 @@
+{
+ "1wk": {
+  "model": {
+   "weeks": 26,
+   "first_week": "2026-03-16",
+   "last_week": "2026-09-07",
+   "onsets": 241,
+   "onsets_per_week": 9.27,
+   "AUROC": 0.885,
+   "AUPRC": 0.076,
+   "recall@50": 0.439,
+   "caught@50": 3.88,
+   "precision@50": 0.078,
+   "recall@100": 0.538,
+   "caught@100": 4.88,
+   "precision@100": 0.049
+  },
+  "rule_recency_population": {
+   "weeks": 26,
+   "first_week": "2026-03-16",
+   "last_week": "2026-09-07",
+   "onsets": 241,
+   "onsets_per_week": 9.27,
+   "AUROC": 0.827,
+   "AUPRC": 0.039,
+   "recall@50": 0.244,
+   "caught@50": 1.81,
+   "precision@50": 0.036,
+   "recall@100": 0.357,
+   "caught@100": 2.62,
+   "precision@100": 0.026
+  },
+  "rule_recency": {
+   "weeks": 26,
+   "first_week": "2026-03-16",
+   "last_week": "2026-09-07",
+   "onsets": 241,
+   "onsets_per_week": 9.27,
+   "AUROC": 0.692,
+   "AUPRC": 0.075,
+   "recall@50": 0.398,
+   "caught@50": 3.69,
+   "precision@50": 0.074,
+   "recall@100": 0.478,
+   "caught@100": 4.15,
+   "precision@100": 0.042
+  }
+ },
+ "4wk": {
+  "model": {
+   "weeks": 26,
+   "first_week": "2026-02-23",
+   "last_week": "2026-08-17",
+   "onsets": 759,
+   "onsets_per_week": 29.19,
+   "AUROC": 0.819,
+   "AUPRC": 0.105,
+   "recall@50": 0.309,
+   "caught@50": 7.81,
+   "precision@50": 0.156,
+   "recall@100": 0.42,
+   "caught@100": 10.62,
+   "precision@100": 0.106
+  },
+  "rule_recency_population": {
+   "weeks": 26,
+   "first_week": "2026-02-23",
+   "last_week": "2026-08-17",
+   "onsets": 759,
+   "onsets_per_week": 29.19,
+   "AUROC": 0.799,
+   "AUPRC": 0.077,
+   "recall@50": 0.222,
+   "caught@50": 5.15,
+   "precision@50": 0.103,
+   "recall@100": 0.333,
+   "caught@100": 8.0,
+   "precision@100": 0.08
+  },
+  "rule_recency": {
+   "weeks": 26,
+   "first_week": "2026-02-23",
+   "last_week": "2026-08-17",
+   "onsets": 759,
+   "onsets_per_week": 29.19,
+   "AUROC": 0.622,
+   "AUPRC": 0.092,
+   "recall@50": 0.247,
+   "caught@50": 6.54,
+   "precision@50": 0.131,
+   "recall@100": 0.356,
+   "caught@100": 9.0,
+   "precision@100": 0.09
+  }
+ }
+}

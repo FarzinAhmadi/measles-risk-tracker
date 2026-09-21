@@ -1,0 +1,41 @@
+{
+ "as_of": "2026-09-18",
+ "origin_week": "2026-09-14",
+ "target_week_start": "2026-09-21",
+ "target_week_end": "2026-09-27",
+ "target_4wk_end": "2026-10-18",
+ "run_utc": "2026-09-21T18:23:55Z",
+ "mode": "live",
+ "model_version": "ew-v0.2",
+ "protocol_4wk": "ipcw",
+ "cases_commit": "f34093a8b6fa52da71c122461108c43fded0b375",
+ "cases_commit_time": "2026-09-18T17:32:08-04:00",
+ "mmr_commit": "2623234bff5e74b453db28a5c8e59821664d16cd",
+ "mmr_commit_time": "2026-06-17T14:13:05-04:00",
+ "tracker_commit": "8a036c889465a16bcffdbe3be06c56a2f8af7343",
+ "total_cases": 5854,
+ "tracker_total_cases": 5854,
+ "counties_scored": 3107,
+ "counties_active": 37,
+ "expected_onsets_1wk": 15.63,
+ "expected_onsets_4wk": 62.27,
+ "train_rows_1wk": 275896,
+ "train_onsets_1wk": 851,
+ "train_rows_4wk": 275896,
+ "train_onsets_4wk": 2717,
+ "panel": {
+  "units": 3187,
+  "counties": 3144,
+  "regions": 43,
+  "unmapped_units": [
+   "09003"
+  ],
+  "unmapped_cases": 3.0,
+  "commuting_edges": 116017,
+  "weeks": 88,
+  "first_week": "2025-01-13",
+  "origin_week": "2026-09-14",
+  "cases_in_panel": 5851.0
+ },
+ "seconds": 141.1
+}

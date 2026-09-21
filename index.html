@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US Measles Risk Tracker</title>
+<meta name="description" content="Weekly county-level forecast of where measles is likely to be reported next in the United States, with open data.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d366b'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23eb6834'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="site/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Research forecast · updated weekly</div>
+    <h1>US Measles Risk Tracker</h1>
+    <p class="lede">Which counties are most likely to report measles next? Each Friday we rank every county that has no cases this week by its chance of reporting one next week and over the next four weeks.</p>
+    <p class="stamp" id="stamp">Loading the latest forecast…</p>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <section class="tiles" id="tiles" aria-label="Summary"></section>
+
+  <section class="controls card" aria-label="Filters">
+    <div>
+      <span class="sr-label" style="font-size:13px;color:var(--ink-2);margin-right:8px">Forecast window</span>
+      <span class="seg" role="group" aria-label="Forecast window">
+        <button type="button" data-h="1wk" aria-pressed="true">Next week</button>
+        <button type="button" data-h="4wk" aria-pressed="false">Next 4 weeks</button>
+      </span>
+    </div>
+    <div>
+      <label for="state">State</label>
+      <select id="state"><option value="">All states</option></select>
+    </div>
+    <div>
+      <label for="search">Find a county</label>
+      <input id="search" type="search" list="county-list" placeholder="e.g. Lancaster County, PA" autocomplete="off">
+      <datalist id="county-list"></datalist>
+    </div>
+  </section>
+
+  <section class="main-grid">
+    <div class="card">
+      <div class="list-head">
+        <h2 id="map-title">Forecast risk by county</h2>
+      </div>
+      <p class="sub" id="map-sub"></p>
+      <div class="legend" id="legend"></div>
+      <div class="map-wrap">
+        <svg id="map" role="img" aria-label="Map of US counties colored by forecast risk tier"></svg>
+        <div class="map-tools"><button class="btn" id="reset" type="button" hidden>Show all states</button></div>
+        <div class="tooltip" id="tip"></div>
+      </div>
+      <p class="note-line" id="regions-note"></p>
+    </div>
+
+    <div class="card">
+      <div class="detail" id="detail"><div class="placeholder">Select a county on the map or in the list to see its details.</div></div>
+      <div class="list-head">
+        <h2 id="list-title">Watchlist</h2>
+        <a id="dl-latest" href="data/latest/forecast.csv" download>Download CSV</a>
+      </div>
+      <p class="sub" id="list-sub"></p>
+      <div class="tbl-wrap"><table id="watch"><thead></thead><tbody></tbody></table></div>
+      <div class="more"><button class="btn" id="more" type="button">Show 50 more</button></div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="card chart">
+      <h2>Reported cases by week</h2>
+      <p class="sub">All confirmed cases in the JHU data, by the week they were reported. The latest week runs Monday to Friday.</p>
+      <div id="cases-chart"></div>
+      <details class="data"><summary>Show as table</summary><div class="tbl-wrap" style="max-height:260px"><table id="cases-tbl"></table></div></details>
+    </div>
+    <div class="card chart">
+      <h2 id="track-title">How the top-50 list has done</h2>
+      <p class="sub" id="track-sub"></p>
+      <div class="legend" id="track-legend"></div>
+      <div id="track-chart"></div>
+      <details class="data"><summary>Show as table</summary><div class="tbl-wrap" style="max-height:260px"><table id="track-tbl"></table></div></details>
+    </div>
+  </section>
+
+  <section class="card" id="live">
+    <h2>Live record</h2>
+    <p class="sub">Every published forecast is archived unchanged and scored once the weeks it covers have been reported. Unlike the backtest above, these forecasts used only the data that were public on the day they were made.</p>
+    <div id="live-body"></div>
+  </section>
+
+  <section class="card">
+    <h2>By state</h2>
+    <p class="sub">Select a row to filter the map and the list.</p>
+    <div class="tbl-wrap" style="max-height:420px"><table id="states"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card prose" id="about">
+    <h2>How it works</h2>
+    <div id="about-body"></div>
+  </section>
+
+  <section class="card prose" id="data">
+    <h2>Open data</h2>
+    <div id="data-body"></div>
+  </section>
+</main>
+
+<footer class="wrap" id="footer"></footer>
+
+<script src="site/vendor/d3.v7.min.js"></script>
+<script src="site/vendor/topojson-client.min.js"></script>
+<script src="site/app.js"></script>
+</body>
+</html>
