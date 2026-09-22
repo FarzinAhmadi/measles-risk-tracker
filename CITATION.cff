@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: Maryland Hospital Global Budget Revenue Dataset
+message: If you use this dataset, please cite it.
+type: dataset
+authors:
+  - family-names: Ahmadi
+    given-names: Farzin
+    affiliation: Towson University
+    email: fahmadi@towson.edu
+version: 0.1.1
+date-released: 2026-08-19
+license: CC-BY-4.0
+abstract: >-
+  A tidy, versioned, machine-readable compilation of Maryland Health Services
+  Cost Review Commission (HSCRC) public reports on the state's all-payer
+  hospital global budget system. Covers hospital revenue and volume by month,
+  rate center, setting, payer and patient residency for FY2017-FY2026;
+  statewide and hospital-level financial condition for FY2005-FY2024,
+  extracted from PDF; a hospital identity crosswalk linking HSCRC hospital
+  numbers to CMS Certification Numbers and every name variant observed; and a
+  sourced reference table of Maryland hospital rate center codes.
+keywords:
+  - Maryland
+  - global budget revenue
+  - all-payer model
+  - hospital finance
+  - health policy
+  - HSCRC
+  - AHEAD model

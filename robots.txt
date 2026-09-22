@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://farzinahmadi.github.io/maryland-gbr-tracker/sitemap.xml
