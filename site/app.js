@@ -6,7 +6,7 @@
 
   let site, us;
   try {
-    [site, us] = await Promise.all([d3.json("data/latest/site.json"), d3.json("site/counties-albers-10m.json")]);
+    [site, us] = await Promise.all([d3.json("data/latest/site.json", { cache: "no-cache" }), d3.json("site/counties-albers-10m.json")]);
   } catch (e) {
     $("#app").innerHTML = `<div class="err"><h2>The forecast data could not be loaded.</h2>
       <p>If you opened this file straight from disk, serve the folder instead:<br><code>python3 -m http.server 8000</code> and open <code>http://localhost:8000</code>.</p></div>`;
@@ -161,7 +161,9 @@
     .translateExtent([[0, 0], [975, 610]])
     .wheelDelta((ev) => -ev.deltaY * (ev.deltaMode === 1 ? 0.05 : ev.deltaMode ? 1 : 0.002) * (Math.abs(ev.deltaY) < 40 ? 10 : 2))
     .filter((ev) => {
-      if (ev.type === "wheel") return ev.ctrlKey || ev.metaKey;
+      // Mouse wheel / trackpad scroll zooms the map. At full-US view, scrolling down is left to the page,
+      // so a reader scrolling past the map is not trapped.
+      if (ev.type === "wheel") return ev.ctrlKey || ev.metaKey || ev.deltaY < 0 || curK > 1.01;
       if (ev.type === "dblclick") return false;
       if (ev.type.startsWith("touch")) return ev.touches.length > 1 || curK > 1.01;
       return !ev.button;
@@ -173,6 +175,13 @@
       $("#reset").hidden = !(S.state || curK > 1.01);
     });
   svg.call(zoom).on("dblclick.zoom", null).style("touch-action", "pan-y");
+  // Safari sends trackpad pinches as gesture events rather than wheel events.
+  let gestureK = 1;
+  svg.node().addEventListener("gesturestart", (e) => { e.preventDefault(); gestureK = curK; });
+  svg.node().addEventListener("gesturechange", (e) => {
+    e.preventDefault();
+    svg.call(zoom.scaleTo, gestureK * e.scale, d3.pointer(e, svg.node()));
+  });
   $("#zoom-in").addEventListener("click", () => svg.transition().duration(300).call(zoom.scaleBy, 1.8));
   $("#zoom-out").addEventListener("click", () => svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.8));
 
