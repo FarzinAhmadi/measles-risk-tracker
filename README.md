@@ -5,9 +5,9 @@ A weekly, county-level forecast of where measles is likely to be reported next i
 Every Friday, after the JHU Measles Tracking Team updates its public data, one script:
 
 1. pulls the latest county case updates ([CSSEGISandData/measles_data](https://github.com/CSSEGISandData/measles_data)) and county MMR coverage ([CSSEGISandData/MMR_data](https://github.com/CSSEGISandData/MMR_data));
-2. rebuilds the county-week panel and retrains the early-warning model from the working paper *Granular surveillance data enable county-level early warning of measles* (draft v0.2);
+2. rebuilds the county-week panel and retrains the early-warning model from the working paper *County-level measles early warning depends on how case data are reported* (draft v1.0);
 3. ranks every county with no cases this week by its chance of reporting one **next week** and over the **next four weeks**;
-4. scores past forecasts against what was actually reported (the live record);
+4. scores past forecasts against what was actually reported (the real-time record);
 5. writes the open-data CSVs and the site data, then commits and pushes to GitHub, which republishes the site.
 
 The site is `index.html` in this folder. GitHub Pages serves it at https://farzinahmadi.github.io/measles-risk-tracker/ (repository: https://github.com/FarzinAhmadi/measles-risk-tracker).
@@ -18,16 +18,16 @@ The site is `index.html` in this folder. GitHub Pages serves it at https://farzi
 python3 update.py
 ```
 
-Run it any time after the Friday update (Friday evening or over the weekend). It takes 2–5 minutes, most of it for the 26-week backtest that feeds the calibration and the performance panel. It prints the top 10 counties, the expected number of newly reporting counties, and how last week's list did.
+Run it any time after the Friday update (Friday evening or over the weekend). It takes about 5–15 minutes, most of it for the 26-week backtest that feeds the calibration and the performance panel (each week refits three models). It prints the top 10 counties, the expected number of newly reporting counties, and how last week's list did.
 
 | Option | What it does |
 |---|---|
 | `--as-of 2026-09-11` | Re-create the forecast for an earlier Friday from the data as they were public on that day. |
-| `--quick` | Skip the 26-week backtest (about 20 seconds) and reuse the last calibration. |
+| `--quick` | Skip the 26-week backtest (about a minute) and reuse the last calibration. |
 | `--no-push` / `--no-git` | Commit without pushing / leave git alone. |
 | `--allow-stale` | Run even though no Friday update has been published yet (by default the script stops and tells you). |
 | `--offline` | Use the cached copies of the upstream repos. |
-| `--backfill 2026-05-01` | One-time: archive the real-time forecast for every Friday since that date (about a minute per week). The repo ships with this done from May 1, 2026. |
+| `--backfill 2026-05-01` | One-time: archive the real-time forecast for every Friday since that date (a few minutes per week). The repo ships with this done from May 1, 2026, by model version ew-v0.2. |
 
 ## First-time setup
 
@@ -45,30 +45,39 @@ To preview the site locally, run `python3 -m http.server 8000` in this folder an
 
 ## What the model is
 
-It is the paper's model. The one choice made here is the IPCW training rule for the 4-week horizon, which is Table 2's alternative row (see Training below). `tools/verify_against_paper.py` checks that the code matches the paper. On the paper's own line list it reproduces all 37 features for all 264,604 county-weeks exactly, and it gives identical walk-forward predictions at both horizons.
+It is the paper's model (manuscript draft v1.0; model version ew-v1.0). `tools/verify_against_paper.py` checks that the code matches the paper. On the paper's own line list it reproduces all 37 features for all 264,604 county-weeks exactly, and it gives identical walk-forward predictions at both horizons.
 
 - **Question.** Among counties that reported no cases this week, which will report at least one confirmed case next week? The secondary horizon is at least one case in the next four weeks. Counties already reporting cases are not ranked.
 - **Unit.** County-week, with weeks starting on Monday and cases dated by report. Cases that jurisdictions report only for a health region, or without a county, are kept as separate units. They count toward state and national activity but are never scored.
-- **Learner.** XGBoost: 200 trees, depth 4, learning rate 0.05, subsample and column sample 0.8, minimum child weight 5, positive class weighted by the negative-to-positive ratio.
+- **Learner.** XGBoost: 200 trees, depth 4, learning rate 0.05, subsample and column sample 0.8, minimum child weight 5, positive class weighted by the negative-to-positive ratio. Each forecast averages three such models fitted with seeds 42, 1 and 2, as in the paper.
 - **Features (37).**
   - Case history: cases in the last 4 and 8 weeks, cumulative cases, ever affected, weeks since the last case.
   - Activity elsewhere: other cases in the state last week, national cases in the last two weeks.
   - Commuting importation: six features from the ACS 2016–2020 commuting flows.
   - Commuting-network diffusion: eight features.
   - Seasonality.
-  - Static county inputs: population, density, MMR susceptibility, seven SVI sub-indices, 2024 vote share and COVID-19 vaccine uptake.
+  - Static county inputs: population, density, MMR susceptibility, the overall SVI percentile and six of its components, 2024 vote share and COVID-19 vaccine uptake.
 
-  All case features use only earlier weeks.
-- **Training.** Each week the model is retrained on every quiet county-week whose outcome is known. The 4-week model uses the censoring-aware rule with IPCW weights. It keeps:
+  All case features use only earlier weeks, and case sums are computed within each county's own series.
+- **Training.** Each week the model is retrained on every quiet county-week whose outcome is known. The 4-week model uses partial-window weighting, the paper's rule. It keeps:
   - rows whose 4-week window has closed;
   - rows with a case already seen;
   - rows whose window is still open with no case yet, as negatives weighted by the share of the window observed (m/4).
 
-  The plain censoring-aware rule in the Methods drops that third group, so the last three weeks enter training as positives only. In the September 2026 surge this inflated the live 4-week scores: 116 newly reporting counties were expected over four weeks, against about 62 implied by the next-week model. The IPCW rule ranks counties almost the same way (41 of the top 50 in common, Spearman 0.95) without the inflation. Set `PROTOCOL_4WK = "cens"` in `tracker/config.py` to switch back.
+  Dropping the third group (closed windows only; set `PROTOCOL_4WK = "cens"` in `tracker/config.py`) puts the last three weeks into training as positives only, which inflated the 4-week scores in the September 2026 surge.
 - **Probabilities.** Platt scaling, fitted each week on the last 8 weeks of out-of-sample (walk-forward) predictions. The ranking comes from the raw model score, so calibration does not change it. The 8-week window was chosen over 26 weeks in a check on the 30 weeks to mid-September 2026. The expected weekly number of newly reporting counties was within 4.3 of the observed number on average, against 5.4 with 26 weeks. Log loss was also slightly lower. Probabilities still lag when activity changes fast, and the 4-week ones most, because their calibration can only use windows that closed at least four weeks earlier. The live record shows expected against observed counts.
-- **What changes from the paper's inputs.** Cases come from the public `measles_data` file instead of the internal line list. On the weeks both cover, 98.6% of county-weeks with cases match exactly; the rest are later revisions. MMR comes from the current `MMR_data` release (v2, school years through 2024–25), which covers about 2,760 counties instead of 2,240.
+- **What changes from the paper's inputs.** Cases come from the public `measles_data` file instead of the internal line list. On the weeks both cover, 98.6% of county-weeks with cases match exactly; the rest are later revisions. MMR comes from the current `MMR_data` release (v2, school years through 2024–25), which gives direct values for about 2,750 counties instead of 2,229.
 
-In the paper's 81-week evaluation, the top 50 counties each week held on average 37% of next-week onsets (2.9 of 8.2 a week), with AUROC 0.84. At four weeks they held 7.4 of 26 a week (precision 15%).
+In the paper's 81-week evaluation, the top 50 counties each week held 35% of next-week onsets (2.9 of 8.2 a week), with AUROC 0.84. At four weeks they held 7.5 of 25.6 a week (precision 15%).
+
+## Model versions
+
+| Version | Forecasts | Model |
+|---|---|---|
+| ew-v1.0 | From October 2026 | The model in manuscript draft v1.0: each forecast averages three models (seeds 42, 1, 2); four- and eight-week case sums are computed within each county's series. |
+| ew-v0.2 | Re-created for 4 May – 14 September 2026, and made from 21 September to 9 October 2026 | One model (seed 42). The four- and eight-week case sums were computed over the stacked panel, which gave different values for about 100 county-weeks in January–February 2025. |
+
+Archived forecasts are kept as they were made and are never re-run; `data/archive/index.csv` records the version that made each one, and the scorecard carries it too.
 
 ## Output files
 

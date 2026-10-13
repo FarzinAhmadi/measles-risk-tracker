@@ -1,8 +1,8 @@
 """
 Configuration for the live measles risk tracker.
 
-The model settings below are the ones in the early-warning manuscript (draft v0.2) and in
-paper_pipeline/common.py. Change them only if the paper changes.
+The model settings below are the ones in the early-warning manuscript (draft v1.0) and in
+paper_pipeline/common.py and paper_pipeline/cf/. Change them only if the paper changes.
 """
 import os
 
@@ -18,7 +18,7 @@ VENV = os.environ.get("MRT_VENV", os.path.join(os.path.expanduser("~"), ".venvs"
 UPSTREAM_DIR = os.path.join(CACHE, "upstream")
 
 TIMEZONE = "America/New_York"
-MODEL_VERSION = "ew-v0.2"          # early-warning model as described in manuscript draft v0.2
+MODEL_VERSION = "ew-v1.0"          # early-warning model as described in manuscript draft v1.0 (see README, Model versions)
 
 # ---------------------------------------------------------------- upstream data (public GitHub repos)
 SOURCES = {
@@ -62,12 +62,12 @@ FEATURES = FULL + DIF               # the paper model: 37 features
 XGB_PARAMS = dict(n_estimators=200, max_depth=4, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8,
                   min_child_weight=5, eval_metric="aucpr", tree_method="hist", random_state=42, verbosity=0)
 MIN_POS, MIN_NEG = 5, 50
+SEEDS = (42, 1, 2)                  # the paper averages the predictions of three models fitted with these seeds
 
-# 4-week training rule. "cens" is the censoring-aware rule in the manuscript's Methods; "ipcw" also keeps rows whose
-# window is still open and has no case yet, as negatives with weight m/4 (Table 2's alternative row). The live
-# tracker uses "ipcw": under "cens" the last three weeks enter training as positives only, and in September 2026 this
-# inflated the live 4-week scores (116 expected newly reporting counties over four weeks, against about 62 implied by
-# the next-week model). The two rules rank almost the same (41 of the top 50 in common; Spearman 0.95).
+# 4-week training rule. "ipcw" is the manuscript's partial-window weighting: rows whose window has closed, rows with a
+# case already observed, and rows whose window is still open with no case yet, as negatives with weight m/4 after m
+# observed weeks. "cens" keeps only the first two groups (the manuscript's sensitivity row); under it the last three
+# weeks enter training as positives only, which inflated the 4-week scores in September 2026.
 PROTOCOL_4WK = "ipcw"
 
 # ---------------------------------------------------------------- operations
