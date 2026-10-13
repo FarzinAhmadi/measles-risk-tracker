@@ -9,6 +9,8 @@ from sklearn.metrics import roc_auc_score
 
 from .config import ARCHIVE, EVAL, LATEST, TIERS, WATCHLIST_K
 
+OLD_MODEL_VERSION = "ew-v0.2"       # forecasts archived before the index recorded the model version
+
 
 def tier_of(rank):
     for cut, name in TIERS:
@@ -90,8 +92,10 @@ def write_archive(o, meta):
     o.to_csv(archive_path(meta["target_week_start"]), index=False)
     idx_path = os.path.join(ARCHIVE, "index.csv")
     row = {k: meta[k] for k in ("target_week_start", "origin_week", "as_of", "run_utc", "cases_commit", "mmr_commit",
-                                "counties_scored", "expected_onsets_1wk", "expected_onsets_4wk", "mode")}
+                                "counties_scored", "expected_onsets_1wk", "expected_onsets_4wk", "mode", "model_version")}
     idx = pd.read_csv(idx_path, dtype=str) if os.path.exists(idx_path) else pd.DataFrame(columns=list(row))
+    if "model_version" not in idx.columns:
+        idx["model_version"] = OLD_MODEL_VERSION         # forecasts archived before the column existed
     idx = idx[idx.target_week_start != meta["target_week_start"]]
     idx = pd.concat([idx, pd.DataFrame([row]).astype(str)], ignore_index=True).sort_values("target_week_start")
     idx.to_csv(idx_path, index=False)
@@ -104,6 +108,10 @@ def scorecard(df, k=WATCHLIST_K):
     cty = df[df.is_region == 0]
     val = cty.pivot_table(index="fips5", columns="week_label", values="value", aggfunc="sum")
     rows, detail = [], []
+    ip = os.path.join(ARCHIVE, "index.csv")
+    idx = pd.read_csv(ip, dtype=str).set_index("target_week_start") if os.path.exists(ip) else pd.DataFrame()
+    def info(tw, col, default):
+        return idx.at[tw, col] if (col in idx.columns and tw in idx.index and isinstance(idx.at[tw, col], str)) else default
     for f in sorted(glob.glob(os.path.join(ARCHIVE, "forecasts", "*.csv"))):
         a = pd.read_csv(f, dtype={"fips": str})
         a = a[a.status == "quiet"]
@@ -122,6 +130,7 @@ def scorecard(df, k=WATCHLIST_K):
             onsets = int(y.sum())
             auc = float(roc_auc_score(y, s)) if 0 < onsets < len(y) else np.nan
             rows.append({"target_week_start": tw, "horizon": h, "window_end": (pd.Timestamp(tws[-1]) + timedelta(days=6)).strftime("%Y-%m-%d"),
+                         "mode": info(tw, "mode", ""), "model_version": info(tw, "model_version", OLD_MODEL_VERSION),
                          "counties_scored": len(a), "onsets": onsets, f"caught_top{k}": caught,
                          f"recall_top{k}": round(caught / onsets, 3) if onsets else np.nan,
                          "expected_onsets": round(float(a[f"prob_case_next_{'week' if n == 1 else '4_weeks'}"].sum()), 2)

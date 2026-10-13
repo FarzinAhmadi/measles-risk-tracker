@@ -2,9 +2,10 @@
 tools/verify_against_paper.py — check that the live code is the manuscript's model.
 
 Feeds the internal line list used for the paper (measles_timeseries 4.csv) through the tracker's feature
-and model code, then compares with the paper pipeline's saved outputs:
+and model code, then compares with the paper pipeline's saved outputs (manuscript draft v1.0):
   1. every one of the 37 features and the label, for all 264,604 county-weeks, against paper_pipeline/out/features.parquet
-  2. walk-forward predictions for a few weeks at both horizons against pred_wf1_FULLDIF / pred_wf4_CENS_FULLDIF
+  2. walk-forward predictions (average of seeds 42, 1, 2) for a few weeks at both horizons against the paper's
+     reference runs paper_pipeline/cf/out/pred/pred_base_h1.parquet and pred_base_h4.parquet (partial-window weighting)
 
 usage:  python tools/verify_against_paper.py "/path/to/Measles Risk Modeling"
 (needs paper_pipeline/out/features.parquet; run paper_pipeline/01_build_features.py first if it is missing,
@@ -18,7 +19,7 @@ sys.path.insert(0, HERE)
 from tracker.features import load_static, build_panel          # noqa: E402
 from tracker.sources import parse_mmr                           # noqa: E402
 from tracker.model import add_4wk_labels, Panel, walkforward    # noqa: E402
-from tracker.config import FEATURES                             # noqa: E402
+from tracker.config import FEATURES, PROTOCOL_4WK               # noqa: E402
 
 src = sys.argv[1] if len(sys.argv) > 1 else "."
 out = os.path.join(src, "paper_pipeline", "out")
@@ -54,9 +55,11 @@ print(f"1. features: paper {len(ref):,} rows, live {len(mine):,} rows, matched {
       "all 37 features and the label identical" if not bad and len(m) == len(ref) == len(mine) else f"DIFFERENT: {bad}")
 
 df = add_4wk_labels(panel); P = Panel(df, FEATURES)
-for h, f, weeks in [(1, "pred_wf1_FULLDIF", [40, 82]), (4, "pred_wf4_CENS_FULLDIF", [40, 78])]:
-    pr = walkforward(P, weeks, h, "cens")
-    r = pd.read_parquet(os.path.join(out, f + ".parquet"))
+cfout = os.path.join(src, "paper_pipeline", "cf", "out")
+for h, f, weeks in [(1, "pred_base_h1", [40, 82]), (4, "pred_base_h4", [40, 78])]:
+    pr = walkforward(P, weeks, h, "cens" if h == 1 else PROTOCOL_4WK)
+    path = next(p for p in (os.path.join(cfout, "pred", f + ".parquet"), os.path.join(cfout, f + ".parquet")) if os.path.exists(p))
+    r = pd.read_parquet(path)
     mm = pr.merge(r[["unit", "widx", "p", "y"]], on=["unit", "widx"], suffixes=("", "_paper"))
     d = float((mm.p - mm.p_paper).abs().max())
     print(f"2. {h}-week walk-forward, weeks {weeks}: {len(mm):,} county-weeks, max |prediction difference| = {d:.2e}, "

@@ -1,8 +1,9 @@
 """
 Model, training rules, walk-forward backtest, calibration and metrics.
 
-Training rules and metrics are ported from paper_pipeline/common.py. The one addition is
-`fit_predict`, which scores the forecast-origin week itself (the paper only scores weeks whose
+Training rules and metrics are ported from paper_pipeline/common.py and paper_pipeline/cf/. As in the paper,
+every forecast averages the predictions of three models fitted with different seeds (config.SEEDS). The one
+addition is `fit_predict`, which scores the forecast-origin week itself (the paper only scores weeks whose
 outcome is already known).
 """
 import numpy as np, pandas as pd
@@ -10,7 +11,7 @@ import xgboost as xgb
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, average_precision_score
 
-from .config import XGB_PARAMS, MIN_POS, MIN_NEG
+from .config import XGB_PARAMS, MIN_POS, MIN_NEG, SEEDS
 
 
 def clf(pw, seed=42, n_jobs=None):
@@ -70,11 +71,23 @@ def training_rows(P: Panel, W, horizon, protocol):
     raise ValueError(protocol)
 
 
+class SeedAverage:
+    """Models fitted with different seeds; predict_proba is the average of theirs (as in the paper)."""
+    def __init__(self, models):
+        self.models = models
+
+    def predict_proba(self, X):
+        return np.mean([m.predict_proba(X) for m in self.models], axis=0)
+
+
 def _fit(P, tr, ytr, w_tr, n_jobs=None):
     pw = (ytr == 0).sum() / max(ytr.sum(), 1)
-    m = clf(pw, n_jobs=n_jobs)
-    m.fit(P.X[tr], ytr, sample_weight=w_tr)
-    return m
+    models = []
+    for s in SEEDS:
+        m = clf(pw, seed=s, n_jobs=n_jobs)
+        m.fit(P.X[tr], ytr, sample_weight=w_tr)
+        models.append(m)
+    return SeedAverage(models)
 
 
 def fit_predict(P: Panel, W, horizon, protocol="cens", n_jobs=None):

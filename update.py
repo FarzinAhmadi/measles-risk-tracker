@@ -7,7 +7,7 @@ Run it after the JHU measles tracker's Friday update:
     python update.py
 
 It pulls the latest county case updates and MMR coverage from the public JHU GitHub repos, rebuilds the
-county-week panel, retrains the early-warning model (manuscript draft v0.2), forecasts which quiet counties
+county-week panel, retrains the early-warning model (manuscript draft v1.0), forecasts which quiet counties
 will report a case next week and in the next four weeks, re-scores past forecasts against what was
 reported, writes the open-data CSVs and the site's data file, and commits and pushes to GitHub.
 

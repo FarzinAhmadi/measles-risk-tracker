@@ -68,8 +68,8 @@ def build_panel(inc: pd.DataFrame, origin_week: pd.Timestamp, mmr: pd.DataFrame,
     # ---------------- 5. leak-free case features ----------------
     g = panel.copy(); gb = g.groupby("unit")["value"]
     for L in (1, 2, 3, 4): g[f"lag{L}"] = gb.shift(L)
-    g["roll4"] = gb.shift(1).rolling(4, min_periods=1).sum().reset_index(0, drop=True)
-    g["roll8"] = gb.shift(1).rolling(8, min_periods=1).sum().reset_index(0, drop=True)
+    g["roll4"] = gb.transform(lambda s: s.shift(1).rolling(4, min_periods=1).sum())     # within each unit's own series
+    g["roll8"] = gb.transform(lambda s: s.shift(1).rolling(8, min_periods=1).sum())
     g["cum"] = gb.cumsum() - g["value"]; g["ever"] = (g["cum"] > 0).astype(int); g["active"] = (g["value"] > 0).astype(int)
 
     def wsl(s):
