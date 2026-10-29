@@ -702,7 +702,6 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-08-24,4wk,39053,Gallia County,OH,914,False
 2026-08-24,4wk,36099,Seneca County,NY,1303,False
 2026-08-24,4wk,36123,Yates County,NY,1040,False
-2026-08-24,4wk,27153,Todd County,MN,876,False
 2026-08-24,4wk,29189,St. Louis County,MO,434,False
 2026-08-24,4wk,36013,Chautauqua County,NY,682,False
 2026-08-24,4wk,08014,Broomfield County,CO,459,False
@@ -804,7 +803,6 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-08-31,4wk,21009,Barren County,KY,1314,False
 2026-08-31,4wk,21223,Trimble County,KY,850,False
 2026-08-31,4wk,18001,Adams County,IN,1226,False
-2026-08-31,4wk,27153,Todd County,MN,1122,False
 2026-08-31,4wk,36031,Essex County,NY,1521,False
 2026-08-31,4wk,27045,Fillmore County,MN,1877,False
 2026-08-31,4wk,30027,Fergus County,MT,1336,False
@@ -878,7 +876,6 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-07,4wk,27045,Fillmore County,MN,1127,False
 2026-09-07,4wk,18033,DeKalb County,IN,1090,False
 2026-09-07,4wk,35061,Valencia County,NM,1340,False
-2026-09-07,4wk,27153,Todd County,MN,972,False
 2026-09-07,4wk,21135,Lewis County,KY,1254,False
 2026-09-07,4wk,30027,Fergus County,MT,1430,False
 2026-09-07,4wk,13159,Jasper County,GA,1366,False
@@ -917,7 +914,6 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-14,1wk,23025,Somerset County,ME,925,False
 2026-09-14,1wk,08014,Broomfield County,CO,965,False
 2026-09-14,1wk,21135,Lewis County,KY,983,False
-2026-09-14,1wk,27153,Todd County,MN,1014,False
 2026-09-14,1wk,27045,Fillmore County,MN,1268,False
 2026-09-14,1wk,36031,Essex County,NY,2130,False
 2026-09-14,1wk,30027,Fergus County,MT,2200,False
@@ -1033,6 +1029,7 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-21,4wk,42097,Northumberland County,PA,3,True
 2026-09-21,4wk,55065,Lafayette County,WI,30,True
 2026-09-21,4wk,39067,Harrison County,OH,22,True
+2026-09-21,4wk,36011,Cayuga County,NY,20,True
 2026-09-21,4wk,42005,Armstrong County,PA,13,True
 2026-09-21,4wk,10001,Kent County,DE,24,True
 2026-09-21,4wk,42081,Lycoming County,PA,6,True
@@ -1055,6 +1052,7 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-21,4wk,53011,Clark County,WA,188,False
 2026-09-21,4wk,36069,Ontario County,NY,325,False
 2026-09-21,4wk,36117,Wayne County,NY,156,False
+2026-09-21,4wk,36059,Nassau County,NY,367,False
 2026-09-21,4wk,36043,Herkimer County,NY,406,False
 2026-09-21,4wk,36075,Oswego County,NY,245,False
 2026-09-21,4wk,42021,Cambria County,PA,21,True
@@ -1063,7 +1061,9 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-21,4wk,27053,Hennepin County,MN,246,False
 2026-09-21,4wk,36077,Otsego County,NY,97,False
 2026-09-21,4wk,39117,Morrow County,OH,279,False
+2026-09-21,4wk,36045,Jefferson County,NY,436,False
 2026-09-21,4wk,36023,Cortland County,NY,304,False
+2026-09-21,4wk,36089,St. Lawrence County,NY,308,False
 2026-09-21,4wk,36065,Oneida County,NY,226,False
 2026-09-21,4wk,39173,Wood County,OH,419,False
 2026-09-21,4wk,42053,Forest County,PA,800,False
@@ -1075,6 +1075,7 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-21,4wk,36123,Yates County,NY,1084,False
 2026-09-21,4wk,29077,Greene County,MO,505,False
 2026-09-21,4wk,36053,Madison County,NY,455,False
+2026-09-21,4wk,08059,Jefferson County,CO,632,False
 2026-09-21,4wk,18001,Adams County,IN,915,False
 2026-09-21,4wk,39131,Pike County,OH,461,False
 2026-09-21,4wk,55123,Vernon County,WI,259,False
@@ -1116,6 +1117,76 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-09-28,1wk,18033,DeKalb County,IN,962,False
 2026-09-28,1wk,27045,Fillmore County,MN,1772,False
 2026-09-28,1wk,13159,Jasper County,GA,1841,False
+2026-09-28,4wk,36117,Wayne County,NY,3,True
+2026-09-28,4wk,39007,Ashtabula County,OH,10,True
+2026-09-28,4wk,36099,Seneca County,NY,18,True
+2026-09-28,4wk,42063,Indiana County,PA,9,True
+2026-09-28,4wk,42027,Centre County,PA,2,True
+2026-09-28,4wk,36101,Steuben County,NY,5,True
+2026-09-28,4wk,36011,Cayuga County,NY,7,True
+2026-09-28,4wk,36013,Chautauqua County,NY,12,True
+2026-09-28,4wk,42043,Dauphin County,PA,19,True
+2026-09-28,4wk,36077,Otsego County,NY,4,True
+2026-09-28,4wk,39067,Harrison County,OH,25,True
+2026-09-28,4wk,36017,Chenango County,NY,8,True
+2026-09-28,4wk,18177,Wayne County,IN,59,False
+2026-09-28,4wk,42083,McKean County,PA,16,True
+2026-09-28,4wk,42021,Cambria County,PA,32,True
+2026-09-28,4wk,39005,Ashland County,OH,36,True
+2026-09-28,4wk,36023,Cortland County,NY,77,False
+2026-09-28,4wk,55073,Marathon County,WI,41,True
+2026-09-28,4wk,39049,Franklin County,OH,62,False
+2026-09-28,4wk,36069,Ontario County,NY,22,True
+2026-09-28,4wk,10001,Kent County,DE,47,True
+2026-09-28,4wk,42039,Crawford County,PA,89,False
+2026-09-28,4wk,36065,Oneida County,NY,75,False
+2026-09-28,4wk,39151,Stark County,OH,48,True
+2026-09-28,4wk,17043,DuPage County,IL,180,False
+2026-09-28,4wk,42013,Blair County,PA,66,False
+2026-09-28,4wk,36053,Madison County,NY,44,True
+2026-09-28,4wk,36089,St. Lawrence County,NY,70,False
+2026-09-28,4wk,21033,Caldwell County,KY,52,False
+2026-09-28,4wk,39103,Medina County,OH,172,False
+2026-09-28,4wk,42067,Juniata County,PA,82,False
+2026-09-28,4wk,36075,Oswego County,NY,101,False
+2026-09-28,4wk,42003,Allegheny County,PA,133,False
+2026-09-28,4wk,42053,Forest County,PA,312,False
+2026-09-28,4wk,36045,Jefferson County,NY,166,False
+2026-09-28,4wk,39173,Wood County,OH,248,False
+2026-09-28,4wk,39063,Hancock County,OH,361,False
+2026-09-28,4wk,39163,Vinton County,OH,342,False
+2026-09-28,4wk,36049,Lewis County,NY,155,False
+2026-09-28,4wk,08059,Jefferson County,CO,368,False
+2026-09-28,4wk,39131,Pike County,OH,288,False
+2026-09-28,4wk,36059,Nassau County,NY,194,False
+2026-09-28,4wk,18121,Parke County,IN,262,False
+2026-09-28,4wk,27053,Hennepin County,MN,316,False
+2026-09-28,4wk,27037,Dakota County,MN,294,False
+2026-09-28,4wk,55105,Rock County,WI,415,False
+2026-09-28,4wk,29071,Franklin County,MO,330,False
+2026-09-28,4wk,18115,Ohio County,IN,493,False
+2026-09-28,4wk,06079,San Luis Obispo County,CA,436,False
+2026-09-28,4wk,55103,Richland County,WI,509,False
+2026-09-28,4wk,55049,Iowa County,WI,434,False
+2026-09-28,4wk,29077,Greene County,MO,426,False
+2026-09-28,4wk,27003,Anoka County,MN,532,False
+2026-09-28,4wk,18087,LaGrange County,IN,391,False
+2026-09-28,4wk,27139,Scott County,MN,715,False
+2026-09-28,4wk,18033,DeKalb County,IN,859,False
+2026-09-28,4wk,26041,Delta County,MI,993,False
+2026-09-28,4wk,27119,Polk County,MN,918,False
+2026-09-28,4wk,27171,Wright County,MN,1137,False
+2026-09-28,4wk,21125,Laurel County,KY,826,False
+2026-09-28,4wk,18103,Miami County,IN,1176,False
+2026-09-28,4wk,39161,Van Wert County,OH,1275,False
+2026-09-28,4wk,29019,Boone County,MO,1012,False
+2026-09-28,4wk,21011,Bath County,KY,1126,False
+2026-09-28,4wk,27153,Todd County,MN,1434,False
+2026-09-28,4wk,27045,Fillmore County,MN,1173,False
+2026-09-28,4wk,13159,Jasper County,GA,2280,False
+2026-09-28,4wk,29015,Benton County,MO,1988,False
+2026-09-28,4wk,29229,Wright County,MO,1734,False
+2026-09-28,4wk,13193,Macon County,GA,3037,False
 2026-10-05,1wk,36101,Steuben County,NY,1,True
 2026-10-05,1wk,39007,Ashtabula County,OH,2,True
 2026-10-05,1wk,42109,Snyder County,PA,3,True
@@ -1151,6 +1222,7 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-10-12,1wk,18121,Parke County,IN,14,True
 2026-10-12,1wk,39155,Trumbull County,OH,15,True
 2026-10-12,1wk,18003,Allen County,IN,17,True
+2026-10-12,1wk,36013,Chautauqua County,NY,18,True
 2026-10-12,1wk,21047,Christian County,KY,20,True
 2026-10-12,1wk,42043,Dauphin County,PA,27,True
 2026-10-12,1wk,27045,Fillmore County,MN,32,True
@@ -1158,14 +1230,20 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-10-12,1wk,18033,DeKalb County,IN,41,True
 2026-10-12,1wk,42013,Blair County,PA,52,False
 2026-10-12,1wk,42021,Cambria County,PA,62,False
+2026-10-12,1wk,36069,Ontario County,NY,65,False
 2026-10-12,1wk,39049,Franklin County,OH,75,False
+2026-10-12,1wk,36011,Cayuga County,NY,81,False
 2026-10-12,1wk,42053,Forest County,PA,123,False
+2026-10-12,1wk,36059,Nassau County,NY,188,False
 2026-10-12,1wk,39103,Medina County,OH,246,False
 2026-10-12,1wk,27037,Dakota County,MN,288,False
 2026-10-12,1wk,27053,Hennepin County,MN,309,False
+2026-10-12,1wk,36089,St. Lawrence County,NY,331,False
 2026-10-12,1wk,39131,Pike County,OH,368,False
 2026-10-12,1wk,27003,Anoka County,MN,438,False
+2026-10-12,1wk,36045,Jefferson County,NY,573,False
 2026-10-12,1wk,29077,Greene County,MO,602,False
+2026-10-12,1wk,08059,Jefferson County,CO,627,False
 2026-10-12,1wk,29071,Franklin County,MO,719,False
 2026-10-12,1wk,27171,Wright County,MN,817,False
 2026-10-12,1wk,27119,Polk County,MN,981,False
@@ -1174,3 +1252,17 @@ target_week_start,horizon,fips,county,state_abbr,rank,in_top50
 2026-10-12,1wk,21011,Bath County,KY,1555,False
 2026-10-12,1wk,29015,Benton County,MO,2116,False
 2026-10-12,1wk,13193,Macon County,GA,2547,False
+2026-10-19,1wk,55043,Grant County,WI,8,True
+2026-10-19,1wk,42133,York County,PA,23,True
+2026-10-19,1wk,55123,Vernon County,WI,25,True
+2026-10-19,1wk,42083,McKean County,PA,27,True
+2026-10-19,1wk,42097,Northumberland County,PA,30,True
+2026-10-19,1wk,18135,Randolph County,IN,32,True
+2026-10-19,1wk,18103,Miami County,IN,55,False
+2026-10-19,1wk,42039,Crawford County,PA,116,False
+2026-10-19,1wk,55105,Rock County,WI,120,False
+2026-10-19,1wk,55103,Richland County,WI,125,False
+2026-10-19,1wk,17043,DuPage County,IL,289,False
+2026-10-19,1wk,27139,Scott County,MN,437,False
+2026-10-19,1wk,39161,Van Wert County,OH,628,False
+2026-10-19,1wk,26041,Delta County,MI,731,False
